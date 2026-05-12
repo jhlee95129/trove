@@ -2,12 +2,17 @@ import { NextRequest, NextResponse } from "next/server"
 
 import { anthropic } from "@/lib/anthropic"
 
-export async function POST(request: NextRequest) {
-  const { message } = (await request.json()) as { message: string }
+type Message = {
+  role: "user" | "assistant"
+  content: string
+}
 
-  if (!message || typeof message !== "string") {
+export async function POST(request: NextRequest) {
+  const { messages } = (await request.json()) as { messages: Message[] }
+
+  if (!Array.isArray(messages) || messages.length === 0) {
     return NextResponse.json(
-      { error: "message is required" },
+      { error: "messages array is required" },
       { status: 400 }
     )
   }
@@ -15,14 +20,9 @@ export async function POST(request: NextRequest) {
   const response = await anthropic.messages.create({
     model: "claude-haiku-4-5",
     max_tokens: 1024,
-    messages: [
-      {
-        role: "user",
-        content: message,
-      },
-    ],
+    messages,
   })
 
-  // raw 응답 전체를 그대로 반환 — content 블록 배열, stop_reason, usage 등을 학습용으로 확인
+  // raw 응답 전체를 그대로 반환 — 클라이언트가 content 블록과 usage를 직접 확인
   return NextResponse.json(response)
 }
