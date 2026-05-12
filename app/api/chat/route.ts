@@ -1,6 +1,16 @@
 import { NextRequest, NextResponse } from "next/server"
 
-import { anthropic } from "@/lib/anthropic"
+import { calculatorTool, executeCalculator } from "@/lib/tools/calculator"
+import { runToolLoop, type ToolExecutors } from "@/lib/tools/loop"
+
+const tools = [calculatorTool]
+
+const executors: ToolExecutors = {
+  calculator: (input) =>
+    executeCalculator(
+      input as { operation: "add" | "subtract" | "multiply" | "divide"; a: number; b: number }
+    ),
+}
 
 type Message = {
   role: "user" | "assistant"
@@ -17,12 +27,8 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  const response = await anthropic.messages.create({
-    model: "claude-haiku-4-5",
-    max_tokens: 1024,
-    messages,
-  })
+  // tool_use 루프: 모델이 도구 호출을 요청하면 실행 후 재호출, end_turn까지 반복
+  const response = await runToolLoop(messages, tools, executors)
 
-  // raw 응답 전체를 그대로 반환 — 클라이언트가 content 블록과 usage를 직접 확인
   return NextResponse.json(response)
 }

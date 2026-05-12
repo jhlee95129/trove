@@ -78,7 +78,7 @@ export default function Page() {
         <div>
           <h1 className="text-lg font-medium">Trove</h1>
           <p className="text-sm text-muted-foreground">
-            Rung 2: 멀티턴 대화
+            Rung 3: Tool Use
           </p>
         </div>
         {lastRaw && (
