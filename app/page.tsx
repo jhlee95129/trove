@@ -35,6 +35,9 @@ export default function Page() {
   const [loading, setLoading] = useState(false)
   const [lastRaw, setLastRaw] = useState<ChatResponse | null>(null)
   const [showRaw, setShowRaw] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const [uploadStatus, setUploadStatus] = useState("")
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -71,6 +74,31 @@ export default function Page() {
     setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }))
   }
 
+  async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setUploading(true)
+    setUploadStatus(`"${file.name}" 업로드 중...`)
+
+    const formData = new FormData()
+    formData.append("file", file)
+
+    try {
+      const res = await fetch("/api/ingest", {
+        method: "POST",
+        body: formData,
+      })
+      const data = (await res.json()) as { message: string }
+      setUploadStatus(data.message)
+    } catch {
+      setUploadStatus("업로드 실패")
+    } finally {
+      setUploading(false)
+      if (fileInputRef.current) fileInputRef.current.value = ""
+    }
+  }
+
   return (
     <div className="mx-auto flex min-h-svh max-w-2xl flex-col p-6">
       {/* Header */}
@@ -78,7 +106,7 @@ export default function Page() {
         <div>
           <h1 className="text-lg font-medium">Trove</h1>
           <p className="text-sm text-muted-foreground">
-            Rung 4: Web Search
+            Rung 7: RAG
           </p>
         </div>
         {lastRaw && (
@@ -141,6 +169,21 @@ export default function Page() {
           )}
         </div>
       )}
+
+      {/* PDF Upload */}
+      <div className="mb-3 flex items-center gap-2">
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".pdf"
+          onChange={handleFileUpload}
+          disabled={uploading}
+          className="text-sm"
+        />
+        {uploadStatus && (
+          <span className="text-xs text-muted-foreground">{uploadStatus}</span>
+        )}
+      </div>
 
       {/* Input */}
       <form onSubmit={handleSubmit} className="flex gap-2">

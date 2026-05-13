@@ -25,7 +25,8 @@ const MAX_ITERATIONS = 10
 export async function runToolLoop(
   messages: Anthropic.MessageParam[],
   tools: Anthropic.Tool[],
-  executors: ToolExecutors
+  executors: ToolExecutors,
+  system?: string
 ): Promise<Anthropic.Message> {
   const currentMessages = [...messages]
   let iterations = 0
@@ -36,6 +37,7 @@ export async function runToolLoop(
     const response = await anthropic.messages.create({
       model: "claude-haiku-4-5",
       max_tokens: 1024,
+      ...(system ? { system } : {}),
       messages: currentMessages,
       tools,
     })
@@ -81,6 +83,7 @@ export async function runToolLoop(
   return anthropic.messages.create({
     model: "claude-haiku-4-5",
     max_tokens: 1024,
+    ...(system ? { system } : {}),
     messages: currentMessages,
     tools,
   })
