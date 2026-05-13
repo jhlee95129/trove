@@ -19,7 +19,7 @@
 - [x] Rung 3: 첫 도구 — 계산기
 - [x] Rung 4: 웹 검색 도구
 - [x] Rung 5: 임베딩 이해
-- [ ] Rung 6: 벡터 검색
+- [x] Rung 6: 벡터 검색
 - [ ] Rung 7: RAG 통합
 - [ ] Rung 8: 간단한 Agent
 - [ ] Rung 9: LangChain 도입
