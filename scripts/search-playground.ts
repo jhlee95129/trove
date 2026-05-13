@@ -12,7 +12,7 @@ import { embed } from "../lib/voyage"
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
+  process.env.SUPABASE_SECRET_KEY!
 )
 
 // --- 검색 함수 (lib/rag/retrieve.ts와 동일한 로직) ---
