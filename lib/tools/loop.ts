@@ -2,10 +2,10 @@ import type Anthropic from "@anthropic-ai/sdk"
 
 import { anthropic } from "@/lib/anthropic"
 
-// 도구 실행기 맵: tool name → 실행 함수
+// 도구 실행기 맵: tool name → 실행 함수 (동기 또는 비동기)
 export type ToolExecutors = Record<
   string,
-  (input: Record<string, unknown>) => string
+  (input: Record<string, unknown>) => string | Promise<string>
 >
 
 const MAX_ITERATIONS = 10
@@ -59,7 +59,7 @@ export async function runToolLoop(
       if (block.type === "tool_use") {
         const executor = executors[block.name]
         const result = executor
-          ? executor(block.input as Record<string, unknown>)
+          ? await executor(block.input as Record<string, unknown>)
           : `Error: unknown tool "${block.name}"`
 
         toolResults.push({

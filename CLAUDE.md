@@ -14,10 +14,10 @@
 
 ## 진행 현황
 
-- [ ] Rung 1: Hello Claude
-- [ ] Rung 2: 멀티턴 대화
-- [ ] Rung 3: 첫 도구 — 계산기
-- [ ] Rung 4: 웹 검색 도구
+- [x] Rung 1: Hello Claude
+- [x] Rung 2: 멀티턴 대화
+- [x] Rung 3: 첫 도구 — 계산기
+- [x] Rung 4: 웹 검색 도구
 - [ ] Rung 5: 임베딩 이해
 - [ ] Rung 6: 벡터 검색
 - [ ] Rung 7: RAG 통합

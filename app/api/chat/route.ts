@@ -2,14 +2,24 @@ import { NextRequest, NextResponse } from "next/server"
 
 import { calculatorTool, executeCalculator } from "@/lib/tools/calculator"
 import { runToolLoop, type ToolExecutors } from "@/lib/tools/loop"
+import { executeWebFetch, webFetchTool } from "@/lib/tools/web-fetch"
+import { executeWebSearch, webSearchTool } from "@/lib/tools/web-search"
 
-const tools = [calculatorTool]
+const tools = [calculatorTool, webSearchTool, webFetchTool]
 
 const executors: ToolExecutors = {
   calculator: (input) =>
     executeCalculator(
-      input as { operation: "add" | "subtract" | "multiply" | "divide"; a: number; b: number }
+      input as {
+        operation: "add" | "subtract" | "multiply" | "divide"
+        a: number
+        b: number
+      }
     ),
+  web_search: (input) =>
+    executeWebSearch(input as { query: string }),
+  web_fetch: (input) =>
+    executeWebFetch(input as { url: string }),
 }
 
 type Message = {
@@ -27,7 +37,6 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  // tool_use 루프: 모델이 도구 호출을 요청하면 실행 후 재호출, end_turn까지 반복
   const response = await runToolLoop(messages, tools, executors)
 
   return NextResponse.json(response)
