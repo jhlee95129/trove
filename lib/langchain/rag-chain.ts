@@ -59,7 +59,7 @@ function formatDocs(docs: Document[]): string {
 /**
  * RAG 체인: LCEL 선언적 조합.
  *
- * invoke({ question: "..." }) → string 답변
+ * invoke("질문 문자열") → string 답변
  */
 export const ragChain = RunnableSequence.from([
   {
@@ -75,5 +75,5 @@ export const ragChain = RunnableSequence.from([
  * 편의 함수: raw API 패턴과 동일한 인터페이스.
  */
 export async function askWithRag(question: string): Promise<string> {
-  return ragChain.invoke({ question })
+  return ragChain.invoke(question)
 }
