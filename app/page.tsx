@@ -29,6 +29,22 @@ type ChatResponse = {
   }
 }
 
+type AgentStep = {
+  type: "thought" | "action" | "observation" | "answer"
+  content: string
+  toolName?: string
+}
+
+type AgentResponse = {
+  answer: string
+  steps: AgentStep[]
+  iterationCount: number
+  usage: {
+    totalInputTokens: number
+    totalOutputTokens: number
+  }
+}
+
 export default function Page() {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
@@ -40,6 +56,14 @@ export default function Page() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
 
+  // Agent mode state
+  const [agentMode, setAgentMode] = useState(false)
+  const [agentSteps, setAgentSteps] = useState<AgentStep[]>([])
+  const [agentUsage, setAgentUsage] = useState<AgentResponse["usage"] | null>(
+    null
+  )
+  const [showSteps, setShowSteps] = useState(false)
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     if (!input.trim() || loading) return
@@ -50,26 +74,48 @@ export default function Page() {
     setInput("")
     setLoading(true)
 
-    // 전체 히스토리를 매번 전송 — LLM은 stateless이므로
-    const res = await fetch("/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages: updatedMessages }),
-    })
+    if (agentMode) {
+      // Agent Mode: 단일 질문 → /api/agent
+      const res = await fetch("/api/agent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: input.trim() }),
+      })
 
-    const data = (await res.json()) as ChatResponse
-    setLastRaw(data)
+      const data = (await res.json()) as AgentResponse
+      setAgentSteps(data.steps)
+      setAgentUsage(data.usage)
+      setLastRaw(null)
 
-    const assistantText =
-      data.content
-        ?.filter((block) => block.type === "text")
-        .map((block) => block.text)
-        .join("\n") ?? ""
+      setMessages([
+        ...updatedMessages,
+        { role: "assistant", content: data.answer },
+      ])
+    } else {
+      // Chat Mode: 전체 히스토리 전송 (기존 방식)
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: updatedMessages }),
+      })
 
-    setMessages([
-      ...updatedMessages,
-      { role: "assistant", content: assistantText },
-    ])
+      const data = (await res.json()) as ChatResponse
+      setLastRaw(data)
+      setAgentSteps([])
+      setAgentUsage(null)
+
+      const assistantText =
+        data.content
+          ?.filter((block) => block.type === "text")
+          .map((block) => block.text)
+          .join("\n") ?? ""
+
+      setMessages([
+        ...updatedMessages,
+        { role: "assistant", content: assistantText },
+      ])
+    }
+
     setLoading(false)
     setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }))
   }
@@ -99,29 +145,64 @@ export default function Page() {
     }
   }
 
+  const stepStyles: Record<AgentStep["type"], string> = {
+    thought: "border-l-2 border-blue-400 bg-blue-50 dark:bg-blue-950/30",
+    action: "border-l-2 border-amber-400 bg-amber-50 dark:bg-amber-950/30",
+    observation:
+      "border-l-2 border-green-400 bg-green-50 dark:bg-green-950/30",
+    answer: "border-l-2 border-purple-400 bg-purple-50 dark:bg-purple-950/30",
+  }
+
+  const stepLabels: Record<AgentStep["type"], string> = {
+    thought: "THOUGHT",
+    action: "ACTION",
+    observation: "OBSERVATION",
+    answer: "ANSWER",
+  }
+
   return (
     <div className="mx-auto flex min-h-svh max-w-2xl flex-col p-6">
       {/* Header */}
       <div className="mb-4 flex items-baseline justify-between">
         <div>
           <h1 className="text-lg font-medium">Trove</h1>
-          <p className="text-sm text-muted-foreground">
-            Rung 7: RAG
-          </p>
+          <p className="text-sm text-muted-foreground">Rung 8: Simple Agent</p>
         </div>
-        {lastRaw && (
-          <div className="text-right text-xs text-muted-foreground">
-            <div>input: {lastRaw.usage.input_tokens} tokens</div>
-            <div>output: {lastRaw.usage.output_tokens} tokens</div>
-          </div>
-        )}
+        <div className="flex items-center gap-3">
+          {/* Mode Toggle */}
+          <button
+            onClick={() => setAgentMode(!agentMode)}
+            className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+              agentMode
+                ? "bg-primary text-primary-foreground"
+                : "bg-muted text-muted-foreground"
+            }`}
+          >
+            {agentMode ? "Agent Mode" : "Chat Mode"}
+          </button>
+          {/* Token Usage */}
+          {agentMode && agentUsage && (
+            <div className="text-right text-xs text-muted-foreground">
+              <div>input: {agentUsage.totalInputTokens} tokens</div>
+              <div>output: {agentUsage.totalOutputTokens} tokens</div>
+            </div>
+          )}
+          {!agentMode && lastRaw && (
+            <div className="text-right text-xs text-muted-foreground">
+              <div>input: {lastRaw.usage.input_tokens} tokens</div>
+              <div>output: {lastRaw.usage.output_tokens} tokens</div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Messages */}
       <div className="flex-1 space-y-4 overflow-y-auto pb-4">
         {messages.length === 0 && (
           <p className="py-12 text-center text-sm text-muted-foreground">
-            대화를 시작해보세요. 매 턴마다 전체 히스토리가 전송됩니다.
+            {agentMode
+              ? "Agent Mode: 질문을 입력하면 에이전트가 도구를 사용해 답변합니다."
+              : "Chat Mode: 대화를 시작해보세요. 매 턴마다 전체 히스토리가 전송됩니다."}
           </p>
         )}
         {messages.map((msg, i) => (
@@ -145,15 +226,46 @@ export default function Page() {
         {loading && (
           <div className="flex justify-start">
             <div className="rounded-2xl rounded-bl-sm bg-muted px-4 py-2.5 text-sm text-muted-foreground">
-              Thinking...
+              {agentMode ? "Agent thinking..." : "Thinking..."}
             </div>
           </div>
         )}
         <div ref={bottomRef} />
       </div>
 
-      {/* Raw JSON toggle */}
-      {lastRaw && (
+      {/* Agent Reasoning Steps */}
+      {agentMode && agentSteps.length > 0 && (
+        <div className="mb-3">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowSteps(!showSteps)}
+          >
+            {showSteps ? "Hide" : "Show"} Reasoning Steps ({agentSteps.length})
+          </Button>
+          {showSteps && (
+            <div className="mt-2 space-y-2">
+              {agentSteps.map((step, i) => (
+                <div
+                  key={i}
+                  className={`rounded-lg px-3 py-2 text-xs ${stepStyles[step.type]}`}
+                >
+                  <span className="font-mono font-semibold">
+                    {stepLabels[step.type]}
+                    {step.toolName && ` [${step.toolName}]`}
+                  </span>
+                  <p className="mt-1 max-h-40 overflow-auto whitespace-pre-wrap">
+                    {step.content}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Raw JSON toggle (Chat Mode only) */}
+      {!agentMode && lastRaw && (
         <div className="mb-3">
           <Button
             variant="outline"
@@ -190,7 +302,11 @@ export default function Page() {
         <Input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="메시지를 입력하세요..."
+          placeholder={
+            agentMode
+              ? "에이전트에게 질문하세요..."
+              : "메시지를 입력하세요..."
+          }
           disabled={loading}
         />
         <Button type="submit" disabled={loading || !input.trim()}>
