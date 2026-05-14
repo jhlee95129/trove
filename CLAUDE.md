@@ -22,7 +22,7 @@
 - [x] Rung 6: 벡터 검색
 - [x] Rung 7: RAG 통합
 - [x] Rung 8: 간단한 Agent
-- [ ] Rung 9: LangChain 도입
+- [x] Rung 9: LangChain 도입
 - [ ] Rung 10: LangGraph 도입
 - [ ] Rung 11: Eval / Harness
 - [ ] Rung 12: Agentic 패턴

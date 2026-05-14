@@ -12,10 +12,15 @@
     "typecheck": "tsc --noEmit",
     "playground:embedding": "tsx --env-file=.env.local scripts/embedding-playground.ts",
     "seed:documents": "tsx --env-file=.env.local scripts/seed-documents.ts",
-    "playground:search": "tsx --env-file=.env.local scripts/search-playground.ts"
+    "playground:search": "tsx --env-file=.env.local scripts/search-playground.ts",
+    "compare:rag": "tsx --env-file=.env.local scripts/compare-rag.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.95.1",
+    "@langchain/anthropic": "^1.3.29",
+    "@langchain/community": "^1.1.28",
+    "@langchain/core": "^1.1.46",
+    "@langchain/textsplitters": "^1.0.1",
     "@supabase/supabase-js": "^2.105.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
