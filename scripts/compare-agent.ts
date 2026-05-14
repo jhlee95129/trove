@@ -6,7 +6,7 @@
  * 실행: pnpm compare:agent
  */
 
-import { runReActGraph } from "../lib/agent/react-graph"
+import { runReActGraph } from "../lib/langgraph/react-graph"
 import { runReActAgent } from "../lib/agent/react-raw"
 
 async function main() {

@@ -45,6 +45,24 @@ type AgentResponse = {
   }
 }
 
+type Mode = "raw" | "langchain" | "langgraph"
+
+const MODE_LABELS: Record<Mode, string> = {
+  raw: "Raw Agent",
+  langchain: "LangChain RAG",
+  langgraph: "LangGraph Agent",
+}
+
+const MODE_DESCRIPTIONS: Record<Mode, string> = {
+  raw: "Raw Agent: 직접 구현한 ReAct 에이전트가 도구를 사용해 답변합니다.",
+  langchain:
+    "LangChain RAG: LCEL 체인이 KB를 검색하고 답변을 생성합니다.",
+  langgraph:
+    "LangGraph Agent: StateGraph 기반 ReAct 에이전트가 도구를 사용해 답변합니다.",
+}
+
+const MODES: Mode[] = ["raw", "langchain", "langgraph"]
+
 export default function Page() {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
@@ -56,13 +74,19 @@ export default function Page() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
 
-  // Agent mode state
-  const [agentMode, setAgentMode] = useState(false)
+  const [mode, setMode] = useState<Mode>("raw")
   const [agentSteps, setAgentSteps] = useState<AgentStep[]>([])
   const [agentUsage, setAgentUsage] = useState<AgentResponse["usage"] | null>(
     null
   )
   const [showSteps, setShowSteps] = useState(false)
+
+  const isAgentMode = mode === "raw" || mode === "langgraph"
+
+  function cycleMode() {
+    const idx = MODES.indexOf(mode)
+    setMode(MODES[(idx + 1) % MODES.length])
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -74,9 +98,11 @@ export default function Page() {
     setInput("")
     setLoading(true)
 
-    if (agentMode) {
-      // Agent Mode: 단일 질문 → /api/agent
-      const res = await fetch("/api/agent", {
+    if (mode === "raw" || mode === "langgraph") {
+      // Agent Mode: 단일 질문
+      const endpoint =
+        mode === "raw" ? "/api/agent" : "/api/agent-graph"
+      const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: input.trim() }),
@@ -92,7 +118,7 @@ export default function Page() {
         { role: "assistant", content: data.answer },
       ])
     } else {
-      // Chat Mode: 전체 히스토리 전송 (기존 방식)
+      // LangChain RAG: 전체 히스토리 전송
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -166,28 +192,26 @@ export default function Page() {
       <div className="mb-4 flex items-baseline justify-between">
         <div>
           <h1 className="text-lg font-medium">Trove</h1>
-          <p className="text-sm text-muted-foreground">Rung 8: Simple Agent</p>
+          <p className="text-sm text-muted-foreground">
+            Rung 10: LangGraph
+          </p>
         </div>
         <div className="flex items-center gap-3">
           {/* Mode Toggle */}
           <button
-            onClick={() => setAgentMode(!agentMode)}
-            className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
-              agentMode
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted text-muted-foreground"
-            }`}
+            onClick={cycleMode}
+            className="rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground transition-colors"
           >
-            {agentMode ? "Agent Mode" : "Chat Mode"}
+            {MODE_LABELS[mode]}
           </button>
           {/* Token Usage */}
-          {agentMode && agentUsage && (
+          {isAgentMode && agentUsage && (
             <div className="text-right text-xs text-muted-foreground">
               <div>input: {agentUsage.totalInputTokens} tokens</div>
               <div>output: {agentUsage.totalOutputTokens} tokens</div>
             </div>
           )}
-          {!agentMode && lastRaw && (
+          {!isAgentMode && lastRaw && (
             <div className="text-right text-xs text-muted-foreground">
               <div>input: {lastRaw.usage.input_tokens} tokens</div>
               <div>output: {lastRaw.usage.output_tokens} tokens</div>
@@ -200,9 +224,7 @@ export default function Page() {
       <div className="flex-1 space-y-4 overflow-y-auto pb-4">
         {messages.length === 0 && (
           <p className="py-12 text-center text-sm text-muted-foreground">
-            {agentMode
-              ? "Agent Mode: 질문을 입력하면 에이전트가 도구를 사용해 답변합니다."
-              : "Chat Mode: 대화를 시작해보세요. 매 턴마다 전체 히스토리가 전송됩니다."}
+            {MODE_DESCRIPTIONS[mode]}
           </p>
         )}
         {messages.map((msg, i) => (
@@ -226,7 +248,7 @@ export default function Page() {
         {loading && (
           <div className="flex justify-start">
             <div className="rounded-2xl rounded-bl-sm bg-muted px-4 py-2.5 text-sm text-muted-foreground">
-              {agentMode ? "Agent thinking..." : "Thinking..."}
+              {isAgentMode ? "Agent thinking..." : "Thinking..."}
             </div>
           </div>
         )}
@@ -234,7 +256,7 @@ export default function Page() {
       </div>
 
       {/* Agent Reasoning Steps */}
-      {agentMode && agentSteps.length > 0 && (
+      {isAgentMode && agentSteps.length > 0 && (
         <div className="mb-3">
           <Button
             variant="outline"
@@ -264,8 +286,8 @@ export default function Page() {
         </div>
       )}
 
-      {/* Raw JSON toggle (Chat Mode only) */}
-      {!agentMode && lastRaw && (
+      {/* Raw JSON toggle (LangChain mode only) */}
+      {!isAgentMode && lastRaw && (
         <div className="mb-3">
           <Button
             variant="outline"
@@ -303,7 +325,7 @@ export default function Page() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={
-            agentMode
+            isAgentMode
               ? "에이전트에게 질문하세요..."
               : "메시지를 입력하세요..."
           }

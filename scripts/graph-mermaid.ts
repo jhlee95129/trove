@@ -5,7 +5,7 @@
  * 결과를 https://mermaid.live 에 붙여넣으면 시각화된다.
  */
 
-import { agentGraph } from "../lib/agent/react-graph"
+import { agentGraph } from "../lib/langgraph/react-graph"
 
 async function main() {
   const mermaid = agentGraph.getGraph().drawMermaid()

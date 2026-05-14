@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 
-import { runReActGraph } from "@/lib/agent/react-graph"
+import { runReActGraph } from "@/lib/langgraph/react-graph"
 
 type AgentRequest = {
   question: string

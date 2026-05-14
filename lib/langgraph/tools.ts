@@ -21,7 +21,7 @@ import { executeCalculator } from "@/lib/tools/calculator"
 import { executeWebFetch } from "@/lib/tools/web-fetch"
 import { executeWebSearch } from "@/lib/tools/web-search"
 
-import { executeKbSearch } from "./tools"
+import { executeKbSearch } from "@/lib/agent/tools"
 
 export const calculatorLcTool = tool(
   async ({ operation, a, b }) => {

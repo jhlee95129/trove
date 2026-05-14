@@ -26,8 +26,8 @@ import type { BaseMessage } from "@langchain/core/messages"
 import { Annotation, StateGraph, START, END } from "@langchain/langgraph"
 import { ToolNode } from "@langchain/langgraph/prebuilt"
 
-import type { AgentResult, AgentStep } from "./types"
-import { allLangchainTools } from "./tools-langchain"
+import type { AgentResult, AgentStep } from "@/lib/agent/types"
+import { allLangchainTools } from "./tools"
 
 // ────────────────────────────────────────────
 // 1. State 정의 (Annotation + Reducer)
