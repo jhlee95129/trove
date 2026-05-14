@@ -14,18 +14,18 @@
 
 ## 진행 현황
 
-- [ ] Rung 1: Hello Claude
-- [ ] Rung 2: 멀티턴 대화
-- [ ] Rung 3: 첫 도구 — 계산기
-- [ ] Rung 4: 웹 검색 도구
-- [ ] Rung 5: 임베딩 이해
-- [ ] Rung 6: 벡터 검색
-- [ ] Rung 7: RAG 통합
-- [ ] Rung 8: 간단한 Agent
-- [ ] Rung 9: LangChain 도입
-- [ ] Rung 10: LangGraph 도입
-- [ ] Rung 11: Eval / Harness
-- [ ] Rung 12: Agentic 패턴
+- [x] Rung 1: Hello Claude
+- [x] Rung 2: 멀티턴 대화
+- [x] Rung 3: 첫 도구 — 계산기
+- [x] Rung 4: 웹 검색 도구
+- [x] Rung 5: 임베딩 이해
+- [x] Rung 6: 벡터 검색
+- [x] Rung 7: RAG 통합
+- [x] Rung 8: 간단한 Agent
+- [x] Rung 9: LangChain 도입
+- [x] Rung 10: LangGraph 도입
+- [x] Rung 11: Eval / Harness
+- [x] Rung 12: Agentic 패턴
 
 > Rung 완료 시 체크박스만 갱신. 학습 노트는 `docs/rungs/NN-name.md`에 별도 작성.
 
@@ -104,8 +104,8 @@ ANTHROPIC_API_KEY=
 VOYAGE_API_KEY=
 TAVILY_API_KEY=
 NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+SUPABASE_SECRET_KEY=
 ```
 
 **원칙**: `NEXT_PUBLIC_` prefix가 붙은 키는 클라이언트로 노출됨. 시크릿은 절대 금지.
