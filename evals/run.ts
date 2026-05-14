@@ -15,7 +15,9 @@ import { computeGenerationMetrics } from "./metrics/generation"
 import { computeRetrievalMetrics } from "./metrics/retrieval"
 import { buildReport, detectRegression, printReport, saveReport } from "./report"
 import { runLangchainRag } from "./runners/langchain-rag"
+import { runLanggraphAgentReflection } from "./runners/langgraph-agent-reflection"
 import { runRawAgent } from "./runners/raw-agent"
+import { runRawAgentReflection } from "./runners/raw-agent-reflection"
 import { runRawRag } from "./runners/raw-rag"
 import type { EvalResult, GoldenEntry, PipelineResult } from "./types"
 
@@ -49,6 +51,8 @@ const RUNNERS: Record<string, PipelineRunner> = {
   "raw-rag": runRawRag,
   "langchain-rag": runLangchainRag,
   "raw-agent": runRawAgent,
+  "raw-agent-reflection": runRawAgentReflection,
+  "langgraph-agent-reflection": runLanggraphAgentReflection,
 }
 
 // --- 골든셋 로드 ---

@@ -30,7 +30,7 @@ type ChatResponse = {
 }
 
 type AgentStep = {
-  type: "thought" | "action" | "observation" | "answer"
+  type: "thought" | "action" | "observation" | "answer" | "reflection"
   content: string
   toolName?: string
 }
@@ -45,12 +45,13 @@ type AgentResponse = {
   }
 }
 
-type Mode = "raw" | "langchain" | "langgraph"
+type Mode = "raw" | "langchain" | "langgraph" | "reflection"
 
 const MODE_LABELS: Record<Mode, string> = {
   raw: "Raw Agent",
   langchain: "LangChain RAG",
   langgraph: "LangGraph Agent",
+  reflection: "Reflection Agent",
 }
 
 const MODE_DESCRIPTIONS: Record<Mode, string> = {
@@ -59,9 +60,11 @@ const MODE_DESCRIPTIONS: Record<Mode, string> = {
     "LangChain RAG: LCEL 체인이 KB를 검색하고 답변을 생성합니다.",
   langgraph:
     "LangGraph Agent: StateGraph 기반 ReAct 에이전트가 도구를 사용해 답변합니다.",
+  reflection:
+    "Reflection Agent: 답변 후 self-critique하고 필요 시 수정합니다.",
 }
 
-const MODES: Mode[] = ["raw", "langchain", "langgraph"]
+const MODES: Mode[] = ["raw", "langchain", "langgraph", "reflection"]
 
 export default function Page() {
   const [messages, setMessages] = useState<Message[]>([])
@@ -81,7 +84,7 @@ export default function Page() {
   )
   const [showSteps, setShowSteps] = useState(false)
 
-  const isAgentMode = mode === "raw" || mode === "langgraph"
+  const isAgentMode = mode === "raw" || mode === "langgraph" || mode === "reflection"
 
   function cycleMode() {
     const idx = MODES.indexOf(mode)
@@ -98,10 +101,10 @@ export default function Page() {
     setInput("")
     setLoading(true)
 
-    if (mode === "raw" || mode === "langgraph") {
+    if (mode === "raw" || mode === "langgraph" || mode === "reflection") {
       // Agent Mode: 단일 질문
       const endpoint =
-        mode === "raw" ? "/api/agent" : "/api/agent-graph"
+        mode === "raw" ? "/api/agent" : mode === "langgraph" ? "/api/agent-graph" : "/api/agent-reflection"
       const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -177,6 +180,8 @@ export default function Page() {
     observation:
       "border-l-2 border-green-400 bg-green-50 dark:bg-green-950/30",
     answer: "border-l-2 border-purple-400 bg-purple-50 dark:bg-purple-950/30",
+    reflection:
+      "border-l-2 border-rose-400 bg-rose-50 dark:bg-rose-950/30",
   }
 
   const stepLabels: Record<AgentStep["type"], string> = {
@@ -184,6 +189,7 @@ export default function Page() {
     action: "ACTION",
     observation: "OBSERVATION",
     answer: "ANSWER",
+    reflection: "REFLECTION",
   }
 
   return (
@@ -193,7 +199,7 @@ export default function Page() {
         <div>
           <h1 className="text-lg font-medium">Trove</h1>
           <p className="text-sm text-muted-foreground">
-            Rung 10: LangGraph
+            Rung 12: Reflection
           </p>
         </div>
         <div className="flex items-center gap-3">

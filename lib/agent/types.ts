@@ -5,7 +5,7 @@ import type Anthropic from "@anthropic-ai/sdk"
  * Thought → Action → Observation 사이클에 대응한다.
  */
 export type AgentStep = {
-  type: "thought" | "action" | "observation" | "answer"
+  type: "thought" | "action" | "observation" | "answer" | "reflection"
   content: string
   toolName?: string
   toolInput?: Record<string, unknown>
@@ -33,6 +33,7 @@ export type AgentResult = {
   answer: string
   steps: AgentStep[]
   iterationCount: number
+  wasRevised?: boolean
   usage: {
     totalInputTokens: number
     totalOutputTokens: number
