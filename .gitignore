@@ -32,6 +32,9 @@ pnpm-debug.log*
 # env files
 .env*.local
 
+# eval results
+evals/results/*.json
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

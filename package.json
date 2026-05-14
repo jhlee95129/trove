@@ -15,7 +15,8 @@
     "playground:search": "tsx --env-file=.env.local scripts/search-playground.ts",
     "compare:rag": "tsx --env-file=.env.local scripts/compare-rag.ts",
     "compare:agent": "tsx --env-file=.env.local scripts/compare-agent.ts",
-    "graph:mermaid": "tsx --env-file=.env.local scripts/graph-mermaid.ts"
+    "graph:mermaid": "tsx --env-file=.env.local scripts/graph-mermaid.ts",
+    "eval": "tsx --env-file=.env.local evals/run.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.95.1",

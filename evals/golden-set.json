@@ -1,0 +1,226 @@
+[
+  {
+    "id": "n01",
+    "question": "인공지능(AI)이란 무엇인가?",
+    "category": "normal",
+    "difficulty": "easy",
+    "expectedSources": ["tech-overview"],
+    "keyPoints": ["인간의 학습, 추론, 지각 능력을 컴퓨터로 구현"]
+  },
+  {
+    "id": "n02",
+    "question": "대규모 언어 모델(LLM)은 어떤 분야에서 성과를 보이고 있나?",
+    "category": "normal",
+    "difficulty": "easy",
+    "expectedSources": ["tech-overview"],
+    "keyPoints": ["자연어 처리", "혁신적 성과"]
+  },
+  {
+    "id": "n03",
+    "question": "RAG란 무엇이고 어떻게 동작하나?",
+    "category": "normal",
+    "difficulty": "easy",
+    "expectedSources": ["rag-intro"],
+    "keyPoints": ["Retrieval-Augmented Generation", "외부 지식 검색", "벡터 데이터베이스", "컨텍스트 제공"]
+  },
+  {
+    "id": "n04",
+    "question": "김치찌개의 주재료는 무엇인가?",
+    "category": "normal",
+    "difficulty": "easy",
+    "expectedSources": ["korean-food"],
+    "keyPoints": ["잘 익은 김치", "돼지고기"]
+  },
+  {
+    "id": "n05",
+    "question": "김치찌개에 넣는 부재료는?",
+    "category": "normal",
+    "difficulty": "easy",
+    "expectedSources": ["korean-food"],
+    "keyPoints": ["두부", "대파"]
+  },
+  {
+    "id": "n06",
+    "question": "조선왕조는 언제부터 언제까지 존속했나?",
+    "category": "normal",
+    "difficulty": "easy",
+    "expectedSources": ["korean-history"],
+    "keyPoints": ["1392년", "1897년", "약 500년"]
+  },
+  {
+    "id": "n07",
+    "question": "세종대왕의 주요 업적은?",
+    "category": "normal",
+    "difficulty": "easy",
+    "expectedSources": ["korean-history"],
+    "keyPoints": ["한글 창제", "백성"]
+  },
+  {
+    "id": "n08",
+    "question": "축구 경기의 기본 규칙을 설명해줘.",
+    "category": "normal",
+    "difficulty": "easy",
+    "expectedSources": ["football-intro"],
+    "keyPoints": ["11명", "두 팀", "골대", "점수"]
+  },
+  {
+    "id": "n09",
+    "question": "FIFA 월드컵은 몇 년마다 열리나?",
+    "category": "normal",
+    "difficulty": "easy",
+    "expectedSources": ["football-intro"],
+    "keyPoints": ["4년"]
+  },
+  {
+    "id": "n10",
+    "question": "TypeScript는 JavaScript와 어떻게 다른가?",
+    "category": "normal",
+    "difficulty": "easy",
+    "expectedSources": ["typescript-intro"],
+    "keyPoints": ["정적 타입 시스템", "컴파일 타임", "타입 오류"]
+  },
+  {
+    "id": "n11",
+    "question": "임베딩이란 무엇인가?",
+    "category": "normal",
+    "difficulty": "easy",
+    "expectedSources": ["embedding-intro"],
+    "keyPoints": ["텍스트를 고차원 벡터로 변환", "의미적 유사"]
+  },
+  {
+    "id": "n12",
+    "question": "Next.js의 App Router는 무엇을 기본으로 사용하나?",
+    "category": "normal",
+    "difficulty": "easy",
+    "expectedSources": ["nextjs-intro"],
+    "keyPoints": ["서버 컴포넌트"]
+  },
+  {
+    "id": "n13",
+    "question": "Next.js는 어떤 종류의 렌더링을 지원하나?",
+    "category": "normal",
+    "difficulty": "medium",
+    "expectedSources": ["nextjs-intro"],
+    "keyPoints": ["서버 사이드 렌더링", "정적 사이트 생성"]
+  },
+  {
+    "id": "n14",
+    "question": "TypeScript는 대규모 프로젝트에 어떤 이점이 있나?",
+    "category": "normal",
+    "difficulty": "medium",
+    "expectedSources": ["typescript-intro"],
+    "keyPoints": ["안정성", "타입 오류를 컴파일 타임에"]
+  },
+  {
+    "id": "n15",
+    "question": "벡터 공간에서 의미적 유사도는 어떻게 측정하나?",
+    "category": "normal",
+    "difficulty": "medium",
+    "expectedSources": ["embedding-intro"],
+    "keyPoints": ["벡터 공간에서 가까운 위치"]
+  },
+  {
+    "id": "c01",
+    "question": "RAG에서 임베딩은 어떤 역할을 하나?",
+    "category": "cross",
+    "difficulty": "medium",
+    "expectedSources": ["rag-intro", "embedding-intro"],
+    "keyPoints": ["벡터 변환", "벡터 데이터베이스에서 검색"]
+  },
+  {
+    "id": "c02",
+    "question": "AI 기술 중 텍스트를 벡터로 변환하는 것은 무엇인가?",
+    "category": "cross",
+    "difficulty": "medium",
+    "expectedSources": ["embedding-intro", "tech-overview"],
+    "keyPoints": ["임베딩", "고차원 벡터"]
+  },
+  {
+    "id": "c03",
+    "question": "TypeScript와 Next.js는 어떤 관계인가?",
+    "category": "cross",
+    "difficulty": "medium",
+    "expectedSources": ["typescript-intro", "nextjs-intro"],
+    "keyPoints": ["React 기반", "JavaScript"]
+  },
+  {
+    "id": "c04",
+    "question": "한국의 전통 문화에 대해 알려줘.",
+    "category": "cross",
+    "difficulty": "hard",
+    "expectedSources": ["korean-food", "korean-history"],
+    "keyPoints": ["김치찌개", "조선왕조", "한글"]
+  },
+  {
+    "id": "c05",
+    "question": "프로그래밍 언어와 프레임워크의 차이를 KB에서 찾아 설명해줘.",
+    "category": "cross",
+    "difficulty": "hard",
+    "expectedSources": ["typescript-intro", "nextjs-intro"],
+    "keyPoints": ["TypeScript는 언어", "Next.js는 프레임워크"]
+  },
+  {
+    "id": "c06",
+    "question": "LLM과 RAG를 결합하면 어떤 이점이 있나?",
+    "category": "cross",
+    "difficulty": "medium",
+    "expectedSources": ["tech-overview", "rag-intro"],
+    "keyPoints": ["답변 품질", "외부 지식"]
+  },
+  {
+    "id": "c07",
+    "question": "AI 관련 기술 3가지를 설명해줘.",
+    "category": "cross",
+    "difficulty": "hard",
+    "expectedSources": ["tech-overview", "rag-intro", "embedding-intro"],
+    "keyPoints": ["LLM", "RAG", "임베딩"]
+  },
+  {
+    "id": "c08",
+    "question": "스포츠와 음식 중 한국과 관련된 것은?",
+    "category": "cross",
+    "difficulty": "hard",
+    "expectedSources": ["korean-food", "football-intro"],
+    "keyPoints": ["김치찌개"]
+  },
+  {
+    "id": "e01",
+    "question": "양자 컴퓨팅의 원리를 설명해줘.",
+    "category": "edge",
+    "difficulty": "hard",
+    "expectedSources": [],
+    "keyPoints": []
+  },
+  {
+    "id": "e02",
+    "question": "파이썬으로 웹 크롤러를 만드는 방법은?",
+    "category": "edge",
+    "difficulty": "hard",
+    "expectedSources": [],
+    "keyPoints": []
+  },
+  {
+    "id": "e03",
+    "question": "asdf qwerty zxcv",
+    "category": "edge",
+    "difficulty": "hard",
+    "expectedSources": [],
+    "keyPoints": []
+  },
+  {
+    "id": "e04",
+    "question": "비트코인 현재 가격은?",
+    "category": "edge",
+    "difficulty": "hard",
+    "expectedSources": [],
+    "keyPoints": []
+  },
+  {
+    "id": "e05",
+    "question": "일본 라멘의 종류를 알려줘.",
+    "category": "edge",
+    "difficulty": "hard",
+    "expectedSources": [],
+    "keyPoints": []
+  }
+]

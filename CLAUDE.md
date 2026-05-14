@@ -24,7 +24,7 @@
 - [x] Rung 8: 간단한 Agent
 - [x] Rung 9: LangChain 도입
 - [x] Rung 10: LangGraph 도입
-- [ ] Rung 11: Eval / Harness
+- [x] Rung 11: Eval / Harness
 - [ ] Rung 12: Agentic 패턴
 
 > Rung 완료 시 체크박스만 갱신. 학습 노트는 `docs/rungs/NN-name.md`에 별도 작성.
